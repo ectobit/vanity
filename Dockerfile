@@ -14,4 +14,4 @@ COPY --from=builder /app/target/release/vanity /
 
 CMD ["./vanity"]
 
-EXPORT 3000
+EXPOSE 3000
