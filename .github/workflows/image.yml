@@ -60,7 +60,7 @@ jobs:
       - name: Prepare tags
         id: prep
         run: |
-          IMAGE=quay.io/ectobit/vanity
+          IMAGE=quay.io/acim/vanity
           VERSION=noop
           if [ "${{ github.event_name }}" = "schedule" ]; then
             VERSION=nightly
