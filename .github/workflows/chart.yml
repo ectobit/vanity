@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - 'chart/**'
+      - 'deploy/charts/vanity/**'
   pull_request:
     paths:
-      - 'chart/**'
+      - 'deploy/charts/vanity/**'
 
 jobs:
   lint:
@@ -40,5 +40,5 @@ jobs:
 
       - name: Lint
         run: |
-          helm lint chart
-          kube-linter lint chart
+          helm lint deploy/charts/vanity
+          kube-linter lint deploy/charts/vanity

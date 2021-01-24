@@ -17,6 +17,14 @@ RUST_LOG=info
 - [kkn.fi/vanity](https://github.com/kare/vanity)
 - [vanity](https://github.com/hawx/vanity)
 
+## Install
+
+```sh
+helm plugin install https://github.com/aslafy-z/helm-git --version 0.10.0
+helm repo add vanity git+https://github.com/acim/vanity@deploy/charts
+helm install vanity/vanity
+```
+
 ## Example responses
 
 ```txt
