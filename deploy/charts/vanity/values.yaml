@@ -17,6 +17,13 @@ fullnameOverride: ''
 env:
   - name: RUST_LOG
     value: info
+  - name: VANITY_CONFIG_PATH
+    value: /etc/vanity.yaml
+
+config:
+  domain: go.ectobit.com
+  packages: clap:
+    https://github.com/ectobit/clap
 
 serviceAccount:
   # Specifies whether a service account should be created

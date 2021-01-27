@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+metadata:
+  name: {{ include "vanity.fullname" . }}
+  labels:
+    {{- include "vanity.labels" . | nindent 4 }}
+data:
+  domain: {{ .Values.config.domain }}
+  {{- with .Values.config.packages }}
+  packages:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
