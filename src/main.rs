@@ -1,14 +1,15 @@
-//!
+//! Crate vanity implements Go vanity imports HTTP server.
 #![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
 
-use log::{error, info};
+use log::info;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
 use warp::Filter;
 
-#[derive(Default, Debug, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 struct Config {
-    map: HashMap<String, String>,
+    domain: String,
+    packages: HashMap<String, String>,
 }
 
 #[tokio::main]
@@ -17,8 +18,8 @@ async fn main() {
 
     let config_path = std::env::var("VANITY_CONFIG_PATH").unwrap();
     info!("config path: {}", config_path);
-    let cfg: Config = confy::load_path(config_path).unwrap();
-    info!("Config: {:#?}", cfg);
+    let config: Config = confy::load_path(config_path).unwrap();
+    info!("Config: {:#?}", config);
 
     let live = warp::path::end()
         .and(warp::get())
@@ -27,9 +28,8 @@ async fn main() {
     let vanity = warp::path::param::<String>()
         .and(warp::get())
         .and(warp::path::end())
-        .map(|p| {
-            let package = format!("go.ectobit.com/{}", p);
-            let repo = format!("https://github.com/ectobit/{}", p);
+        .map(move |p| {
+            let package_name = format!("{}/{}", config.domain, p);
 
             format!(
                 r#"<!DOCTYPE html>
@@ -41,7 +41,7 @@ async fn main() {
         Nothing to see here.
     </body>
 </html>"#,
-                package, repo
+                package_name, config.packages[&package_name]
             )
         });
 

@@ -1,3 +1,4 @@
 ---
-map:
-  go.ectobit.com/clap: https://github.com/ectobit/clap
+domain: go.ectobit.com
+packages:
+  clap: https://github.com/ectobit/clap
