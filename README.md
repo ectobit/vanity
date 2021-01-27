@@ -5,6 +5,7 @@ Go vanity imports HTTP server
 ## Environment variables
 
 RUST_LOG=info
+VANITY_CONFIG_PATH=/path/to/vanity.yaml
 
 ## Related blog posts
 

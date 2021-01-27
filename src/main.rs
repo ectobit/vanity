@@ -1,8 +1,24 @@
+//!
+#![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
+
+use log::{error, info};
+use serde_derive::{Deserialize, Serialize};
+use std::collections::HashMap;
 use warp::Filter;
+
+#[derive(Default, Debug, Serialize, Deserialize)]
+struct Config {
+    map: HashMap<String, String>,
+}
 
 #[tokio::main]
 async fn main() {
     json_env_logger::init();
+
+    let config_path = std::env::var("VANITY_CONFIG_PATH").unwrap();
+    info!("config path: {}", config_path);
+    let cfg: Config = confy::load_path(config_path).unwrap();
+    info!("Config: {:#?}", cfg);
 
     let live = warp::path::end()
         .and(warp::get())
