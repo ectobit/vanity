@@ -1,4 +1,0 @@
----
-domain: go.ectobit.com
-packages:
-  clap: https://github.com/ectobit/clap
