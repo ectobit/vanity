@@ -38,8 +38,10 @@ spec:
               containerPort: 3000
               protocol: TCP
           env:
-            VANITY_CONFIG_PATH: /etc/vanity.yaml
-            RUST_LOG: {{ .Values.config.log-level }}
+            - name: VANITY_CONFIG_PATH
+              value: /etc/vanity.yaml
+            - name: RUST_LOG
+              value: {{ .Values.config.log-level | default "error" | quote }}
           livenessProbe:
             httpGet:
               path: /
