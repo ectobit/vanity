@@ -22,7 +22,7 @@ VANITY_CONFIG_PATH=/path/to/vanity.yaml
 
 ```sh
 helm plugin install https://github.com/aslafy-z/helm-git --version 0.10.0
-helm repo add vanity "git+https://github.com/acim/vanity@deploy/charts?ref=main"
+helm repo add vanity "git+https://github.com/ectobit/vanity@deploy/charts?ref=main"
 helm install vanity/vanity
 ```
 
