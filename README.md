@@ -2,11 +2,6 @@
 
 Go vanity imports HTTP server
 
-## Environment variables
-
-RUST_LOG=info
-VANITY_CONFIG_PATH=/path/to/vanity.yaml
-
 ## Related blog posts
 
 - [Vanity Go Import Paths](https://blog.bramp.net/post/2017/10/02/vanity-go-import-paths/)
@@ -25,6 +20,8 @@ helm plugin install https://github.com/aslafy-z/helm-git --version 0.10.0
 helm repo add vanity "git+https://github.com/ectobit/vanity@deploy/charts?ref=main"
 helm install vanity/vanity
 ```
+
+### [Chart documentation](deploy/charts/vanity/README.md)
 
 ## Example responses
 

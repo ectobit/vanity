@@ -38,7 +38,8 @@ spec:
               containerPort: 3000
               protocol: TCP
           env:
-            {{- toYaml .Values.env | nindent 12 }}
+            VANITY_CONFIG_PATH: /etc/vanity.yaml
+            RUST_LOG: {{ .Values.config.log-level }}
           livenessProbe:
             httpGet:
               path: /
