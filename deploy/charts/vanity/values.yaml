@@ -17,9 +17,10 @@ fullnameOverride: ''
 logLevel: info
 
 config:
-  domain: go.ectobit.com
+  domain: go.your-domain.com
   packages:
-    clap: https://github.com/ectobit/clap
+    {}
+    # your_package : https://github.com/your_account/your_package
 
 serviceAccount:
   # Specifies whether a service account should be created
