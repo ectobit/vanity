@@ -41,7 +41,7 @@ spec:
             - name: VANITY_CONFIG_PATH
               value: /etc/vanity.yaml
             - name: RUST_LOG
-              value: {{ .Values.config.log-level | default "error" | quote }}
+              value: {{ .Values.logLevel | default "error" }}
           livenessProbe:
             httpGet:
               path: /
@@ -55,6 +55,8 @@ spec:
           volumeMounts:
           - name: config
             mountPath: /etc/vanity.yaml
+            subPath: config
+            readOnly: true
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -70,4 +72,4 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ include "postfix.fullname" . }}
+          name: {{ include "vanity.fullname" . }}

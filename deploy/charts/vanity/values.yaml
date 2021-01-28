@@ -14,8 +14,9 @@ imagePullSecrets: []
 nameOverride: ''
 fullnameOverride: ''
 
+logLevel: info
+
 config:
-  log-level: info
   domain: go.ectobit.com
   packages:
     clap: https://github.com/ectobit/clap

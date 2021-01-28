@@ -1,6 +1,6 @@
 # vanity
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.0](https://img.shields.io/badge/AppVersion-0.2.0-informational?style=flat-square)
+![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.2](https://img.shields.io/badge/AppVersion-0.2.2-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -14,7 +14,6 @@ A Helm chart for Kubernetes
 | autoscaling.minReplicas                    | int    | `1`                                 |             |
 | autoscaling.targetCPUUtilizationPercentage | int    | `80`                                |             |
 | config.domain                              | string | `"go.ectobit.com"`                  |             |
-| config.log-level                           | string | `"info"`                            |             |
 | config.packages.clap                       | string | `"https://github.com/ectobit/clap"` |             |
 | fullnameOverride                           | string | `""`                                |             |
 | image.pullPolicy                           | string | `"IfNotPresent"`                    |             |
@@ -26,6 +25,7 @@ A Helm chart for Kubernetes
 | ingress.hosts[0].host                      | string | `"chart-example.local"`             |             |
 | ingress.hosts[0].paths                     | list   | `[]`                                |             |
 | ingress.tls                                | list   | `[]`                                |             |
+| logLevel                                   | string | `"info"`                            |             |
 | nameOverride                               | string | `""`                                |             |
 | nodeSelector                               | object | `{}`                                |             |
 | podAnnotations                             | object | `{}`                                |             |
