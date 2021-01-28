@@ -14,7 +14,11 @@ A Helm chart for Kubernetes
 
 ## Install
 
-`helm install vanity vanity/vanity --set config.domain=your-domain.com --set config.packages.your_package=https://github.com/your_account/your_repo`
+```sh
+helm install vanity vanity/vanity \
+  --set config.domain=your-domain.com \
+  --set config.packages.your_package=https://github.com/your_account/your_repo
+```
 
 ## Helmfile
 
