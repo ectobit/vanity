@@ -4,7 +4,7 @@
 use log::info;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
-use warp::Filter;
+use warp::{http::Response, Filter};
 
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
 struct Config {
@@ -29,10 +29,11 @@ async fn main() {
         .and(warp::get())
         .and(warp::path::end())
         .map(move |p| {
-            let package_name = format!("{}/{}", config.domain, p);
-
-            format!(
-                r#"<!DOCTYPE html>
+            let package_name = format!("{}/{}", &config.domain, &p);
+            let repository_name = config.packages.get(&p);
+            match repository_name {
+                Some(repository_name) => Response::builder().body(format!(
+                    r#"<!DOCTYPE html>
 <html>
     <head>
         <meta name="go-import" content="{} git {}">
@@ -41,8 +42,13 @@ async fn main() {
         Nothing to see here.
     </body>
 </html>"#,
-                package_name, config.packages[&package_name]
-            )
+                    package_name, repository_name
+                )),
+
+                None => Response::builder()
+                    .status(404)
+                    .body(format!("Package {} not found", package_name)),
+            }
         });
 
     let routes = warp::get().and(live.or(vanity));
