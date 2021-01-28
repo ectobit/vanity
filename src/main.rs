@@ -33,15 +33,7 @@ async fn main() {
             let repository_name = config.packages.get(&p);
             match repository_name {
                 Some(repository_name) => Response::builder().body(format!(
-                    r#"<!DOCTYPE html>
-<html>
-    <head>
-        <meta name="go-import" content="{} git {}">
-    </head>
-    <body>
-        Nothing to see here.
-    </body>
-</html>"#,
+                    r#"<!DOCTYPE html><html><head><meta name="go-import" content="{} git {}"></head><body>Nothing to see here.</body></html>"#,
                     package_name, repository_name
                 )),
 
