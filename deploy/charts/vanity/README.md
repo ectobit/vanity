@@ -1,8 +1,45 @@
 # vanity
 
-![Version: 0.2.4](https://img.shields.io/badge/Version-0.2.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: latest](https://img.shields.io/badge/AppVersion-latest-informational?style=flat-square)
-
 A Helm chart for Kubernetes
+
+![Version: 0.2.4](https://img.shields.io/badge/Version-0.2.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: latest](https://img.shields.io/badge/AppVersion-latest-informational?style=flat-square) ![chart](https://github.com/ectobit/vanity/workflows/chart/badge.svg)
+
+## Prerequisites
+
+`helm plugin install https://github.com/aslafy-z/helm-git`
+
+## Add repository
+
+`helm repo add vanity "git+https://github.com/ectobit/vanity@deploy/charts?ref=main"`
+
+## Install
+
+`helm install vanity vanity/vanity --set config.domain=your-domain.com --set config.packages.your_package=https://github.com/your_account/your_repo`
+
+## Helmfile
+
+```yaml
+releases:
+  - name: vanity
+    chart: vanity/vanity
+    namespace: default
+    values:
+      - config:
+          domain: your-domain.com
+          packages:
+            your_package: https://github.com/your_account/your_repo
+      - ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: nginx
+          hosts:
+            - host: your-domain.com
+              paths: ['/']
+          tls:
+            - secretName: your-domain-com-tls
+              hosts:
+                - your-domain.com
+```
 
 ## Values
 
