@@ -16,4 +16,4 @@ Go vanity imports HTTP server
 - [kkn.fi/vanity](https://github.com/kare/vanity)
 - [vanity](https://github.com/hawx/vanity)
 
-## [Install](deploy/charts/vanity/README.md)
+## [Install](https://artifacthub.io/packages/helm/ectobit/vanity)
