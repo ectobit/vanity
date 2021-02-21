@@ -3,7 +3,6 @@
 Go vanity imports HTTP server
 
 ![image](https://github.com/ectobit/vanity/workflows/image/badge.svg)
-[![License](https://img.shields.io/github/license/ectobit/vanity)](LICENSE)
 
 ## Related blog posts
 
