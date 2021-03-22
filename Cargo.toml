@@ -1,20 +1,20 @@
 [package]
 name = "vanity"
-version = "0.2.7"
+version = "0.2.8"
 authors = ["Boban Acimovic <boban.acimovic@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio = { version = "1.3.0", features = ["full"] }
-warp = "0.3.0"
-log = "0.4.13"
+anyhow = "1.0.39"
+confy = { version = "0.4.0", default-features = false, features = ["yaml_conf"] }
 json_env_logger = { version = "0.1.1", features = ["iso-timestamps"] }
+log = "0.4.13"
 serde = "1.0.124"
 serde_derive = "1.0.124"
-confy = { version = "0.4.0", default-features = false, features = ["yaml_conf"] }
-anyhow = "1.0.38"
+tokio = { version = "1.4.0", features = ["full"] }
+warp = "0.3.0"
 
 [patch.crates-io]
 confy = { git = 'https://github.com/rust-cli/confy' }
