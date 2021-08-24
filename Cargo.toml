@@ -11,7 +11,7 @@ anyhow = "1.0.43"
 confy = { version = "0.4.0", default-features = false, features = ["yaml_conf"] }
 json_env_logger = { version = "0.1.1", features = ["iso-timestamps"] }
 log = ">=0.4.13, <0.4.14" # restricted because json_env_logger compile failes with newer versions
-serde = "1.0.128"
+serde = "1.0.129"
 serde_derive = "1.0.128"
 tokio = { version = "1.10.0", features = ["full"] }
 warp = "0.3.1"
