@@ -8,7 +8,7 @@ ADD . /app
 
 RUN cargo build --release --all-features && cargo strip
 
-FROM gcr.io/distroless/cc
+FROM gcr.io/distroless/cc-debian11
 
 COPY --from=builder /app/target/release/vanity /
 
