@@ -41,15 +41,15 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: audit
-      - name: Install cargo pants
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: cargo-pants
-      - name: Run cargo pants
-        uses: actions-rs/cargo@v1
-        with:
-          command: pants
+      # - name: Install cargo pants               ENABLE ME
+      #   uses: actions-rs/cargo@v1
+      #   with:
+      #     command: install
+      #     args: cargo-pants
+      # - name: Run cargo pants
+      #   uses: actions-rs/cargo@v1
+      #   with:
+      #     command: pants
   build:
     runs-on: ubuntu-latest
     needs: lint
