@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN cargo install cargo-strip
 
-ADD . /app
+COPY . /app
 
 RUN cargo build --release --all-features && cargo strip
 

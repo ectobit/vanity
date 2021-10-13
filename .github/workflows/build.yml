@@ -50,6 +50,11 @@ jobs:
       #   uses: actions-rs/cargo@v1
       #   with:
       #     command: pants
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v1.5.0
+        with:
+          dockerfile: Dockerfile
+          ignore: DL3006
   build:
     runs-on: ubuntu-latest
     needs: lint
