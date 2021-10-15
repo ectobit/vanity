@@ -11,7 +11,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,targe
     cargo strip && \
     mv /app/target/release/vanity /app
 
-FROM debian:11.1-slim
+FROM gcr.io/distroless/cc-debian11
 
 LABEL org.opencontainers.image.vendor="ectobit.com"
 
