@@ -7,13 +7,15 @@ RUN cargo install cargo-strip
 
 COPY . .
 
-RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,target=/app/target cargo build --release && cargo strip
+RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,target=/app/target cargo build --release && \
+    cargo strip && \
+    mv /app/target/release/vanity /app
 
 FROM debian:11.1-slim
 
 LABEL org.opencontainers.image.vendor="ectobit.com"
 
-COPY --from=builder /app/target/release/vanity /
+COPY --from=builder /app/vanity /
 
 CMD ["./vanity"]
 
