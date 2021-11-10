@@ -14,7 +14,7 @@ log = ">=0.4.13, <0.4.14" # restricted because json_env_logger compile failes wi
 serde = "1.0.130"
 serde_derive = "1.0.130"
 tokio = { version = "1.13.0", features = ["full"] }
-warp = "0.3.1"
+warp = "0.3.2"
 
 [patch.crates-io]
 confy = { git = 'https://github.com/rust-cli/confy' }
