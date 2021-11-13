@@ -2,7 +2,9 @@
 
 Go vanity imports HTTP server
 
-![image](https://github.com/ectobit/vanity/workflows/image/badge.svg)
+[![Build Status](https://github.com/ectobit/vanity/workflows/build/badge.svg)](https://github.com/ectobit/vanity/actions)
+[![Docker Image Size](https://img.shields.io/docker/image-size/ectobit/vanity)](https://hub.docker.com/repository/docker/ectobit/vanity)
+[![License](https://img.shields.io/badge/license-BSD--2--Clause--Patent-orange.svg)](https://github.com/ectobit/vanity/blob/main/LICENSE)
 
 ## Related blog posts
 
