@@ -7,7 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.50"
+anyhow = "1.0.51"
 confy = { version = "0.4.0", default-features = false, features = ["yaml_conf"] }
 json_env_logger = { version = "0.1.1", features = ["iso-timestamps"] }
 log = ">=0.4.13, <0.4.14" # restricted because json_env_logger compile failes with newer versions
