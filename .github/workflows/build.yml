@@ -4,7 +4,11 @@ on: [push, pull_request]
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        rust: [nightly]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
         uses: actions/checkout@v2.4.0
@@ -12,11 +16,17 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: ${{ matrix.rust }}
           override: true
           components: rustfmt, clippy
-      - name: Set up cargo cache
-        uses: Swatinem/rust-cache@v1
+      - name: Set up cache
+        uses: actions/cache@v2.1.7
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1.0.3
         with:
@@ -27,6 +37,15 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
+      - name: Install cargo udeps
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: cargo-udeps --locked
+      - name: Run cargo udeps
+        uses: actions-rs/cargo@v1
+        with:
+          command: udeps
       - name: Install cargo audit
         uses: actions-rs/cargo@v1
         with:
