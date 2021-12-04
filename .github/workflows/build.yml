@@ -27,29 +27,26 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
-      - name: Run cargo build
+      - name: Install cargo audit
         uses: actions-rs/cargo@v1
         with:
-          command: build
-          args: --release --all-features
-      # - name: Install cargo audit
-      #   uses: actions-rs/cargo@v1
-      #   with:
-      #     command: install
-      #     args: cargo-audit
-      # - name: Run cargo audit
-      #   uses: actions-rs/cargo@v1
-      #   with:
-      #     command: audit
-      # - name: Install cargo pants               ENABLE ME
-      #   uses: actions-rs/cargo@v1
-      #   with:
-      #     command: install
-      #     args: cargo-pants
-      # - name: Run cargo pants
-      #   uses: actions-rs/cargo@v1
-      #   with:
-      #     command: pants
+          command: install
+          args: cargo-audit
+      - name: Run cargo audit
+        uses: actions-rs/cargo@v1
+        with:
+          command: audit
+        continue-on-error: true
+      - name: Install cargo pants
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: cargo-pants
+      - name: Run cargo pants
+        uses: actions-rs/cargo@v1
+        with:
+          command: pants
+        continue-on-error: true
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v1.6.0
         with:
