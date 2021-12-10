@@ -2,7 +2,7 @@
 #![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
 
 use log::info;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use warp::{http::Response, Filter};
 
