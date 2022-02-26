@@ -1,15 +1,15 @@
 [package]
 name = "vanity"
-version = "0.3.4"
+version = "0.3.10"
 authors = ["Boban Acimovic <boban.acimovic@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 confy = { version = "0.4.0", default-features = false, features = ["yaml_conf"] }
 json_env_logger = { version = "0.1.1", features = ["iso-timestamps"] }
-log = ">=0.4.13, <0.4.14" # restricted because json_env_logger compile failes with newer versions
+log = { version = "0.4.14", features = ["kv_unstable_std"] }
 serde = { version = "1.0.136", features = ["derive"] }
 tokio = { version = "1.16.1", features = ["full"] }
 warp = "0.3.2"
