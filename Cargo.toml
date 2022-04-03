@@ -1,6 +1,6 @@
 [package]
 name = "vanity"
-version = "0.3.10"
+version = "0.3.11"
 authors = ["Boban Acimovic <boban.acimovic@gmail.com>"]
 edition = "2021"
 
@@ -11,7 +11,7 @@ confy = { version = "0.4.0", default-features = false, features = ["yaml_conf"] 
 json_env_logger = { version = "0.1.1", features = ["iso-timestamps"] }
 log = { version = "0.4.16", features = ["kv_unstable_std"] }
 serde = { version = "1.0.136", features = ["derive"] }
-tokio = { version = "1.16.1", features = ["full"] }
+tokio = { version = "1.17.0", features = ["full"] }
 warp = "0.3.2"
 
 [patch.crates-io]
