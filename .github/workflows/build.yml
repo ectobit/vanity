@@ -55,7 +55,6 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: audit
-        continue-on-error: true
       - name: Install cargo pants
         uses: actions-rs/cargo@v1
         with:
@@ -65,7 +64,6 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: pants
-        continue-on-error: true
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v2.1.0
         with:

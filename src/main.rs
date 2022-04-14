@@ -1,9 +1,11 @@
 //! Crate vanity implements Go vanity imports HTTP server.
 #![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
 
-use log::info;
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use slog::{info, o, Drain};
+use slog_json::Json;
+use std::{collections::HashMap, io, process, sync::Mutex};
 use warp::{http::Response, Filter};
 
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
@@ -14,12 +16,25 @@ struct Config {
 
 #[tokio::main]
 async fn main() {
-    json_env_logger::init();
+    process::exit(match run().await {
+        Ok(_) => 0,
+        Err(err) => {
+            eprintln!("error: {:?}", err);
+            1
+        }
+    });
+}
 
-    let config_path = std::env::var("VANITY_CONFIG_PATH").unwrap();
-    info!("config path: {}", config_path);
-    let config: Config = confy::load_path(config_path).unwrap();
-    info!("Config: {:#?}", config);
+async fn run() -> Result<()> {
+    let log = slog::Logger::root(
+        Mutex::new(Json::default(io::stderr())).map(slog::Fuse),
+        o!(),
+    );
+
+    let config_path = std::env::var("VANITY_CONFIG_PATH")?;
+    info!(log, "config path: {}", config_path);
+    let config: Config = confy::load_path(config_path)?;
+    info!(log, "Config: {:#?}", config);
 
     let live = warp::path::end()
         .and(warp::get())
@@ -46,4 +61,6 @@ async fn main() {
     let routes = warp::get().and(live.or(vanity));
 
     warp::serve(routes).run(([0, 0, 0, 0], 3000)).await;
+
+    Ok(())
 }
