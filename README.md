@@ -6,6 +6,10 @@ Go vanity imports HTTP server
 [![Docker Image Size](https://img.shields.io/docker/image-size/ectobit/vanity)](https://hub.docker.com/repository/docker/ectobit/vanity)
 [![License](https://img.shields.io/badge/license-BSD--2--Clause--Patent-orange.svg)](https://github.com/ectobit/vanity/blob/main/LICENSE)
 
+## Run locally
+
+`VANITY_CONFIG_PATH=$(pwd)/config.yaml cargo run`
+
 ## Related blog posts
 
 - [Vanity Go Import Paths](https://blog.bramp.net/post/2017/10/02/vanity-go-import-paths/)

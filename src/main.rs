@@ -38,7 +38,10 @@ async fn run() -> Result<()> {
         .add_source(config::File::with_name(&config_path))
         .build()?
         .try_deserialize::<Cfg>()?;
-    info!(log, "Config: {:#?}", config);
+
+    config.packages.iter().for_each(
+        |(k, v)| info!(log, "config"; "repository" => v, "package"=> format!("{}/{}", config.domain, k)),
+    );
 
     let live = warp::path::end()
         .and(warp::get())

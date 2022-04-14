@@ -1,0 +1,7 @@
+domain: go.ectobit.com
+packages:
+  act: https://github.com/ectobit/act
+  arc: https://github.com/ectobit/arc
+  gap: https://github.com/ectobit/gap
+  lax: https://github.com/ectobit/lax
+  oxeye: https://github.com/ectobit/oxeye
