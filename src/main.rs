@@ -2,14 +2,15 @@
 #![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
 
 use anyhow::Result;
-use serde::{Deserialize, Serialize};
+use config::Config;
+use serde::Deserialize;
 use slog::{info, o, Drain};
 use slog_json::Json;
 use std::{collections::HashMap, io, process, sync::Mutex};
 use warp::{http::Response, Filter};
 
-#[derive(Clone, Default, Debug, Serialize, Deserialize)]
-struct Config {
+#[derive(Debug, Deserialize)]
+struct Cfg {
     domain: String,
     packages: HashMap<String, String>,
 }
@@ -33,7 +34,10 @@ async fn run() -> Result<()> {
 
     let config_path = std::env::var("VANITY_CONFIG_PATH")?;
     info!(log, "config path: {}", config_path);
-    let config: Config = confy::load_path(config_path)?;
+    let config = Config::builder()
+        .add_source(config::File::with_name(&config_path))
+        .build()?
+        .try_deserialize::<Cfg>()?;
     info!(log, "Config: {:#?}", config);
 
     let live = warp::path::end()

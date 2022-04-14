@@ -8,12 +8,9 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.56"
-confy = { version = "0.4.0", default-features = false, features = ["yaml_conf"] }
+config = { version = "0.13.1", default-features = false, features = ["yaml"] }
 serde = { version = "1.0.136", features = ["derive"] }
 slog = { version = "2.7.0", features = ["max_level_trace", "release_max_level_info"] }
 slog-json = "2.6.1"
 tokio = { version = "1.17.0", features = ["full"] }
 warp = "0.3.2"
-
-[patch.crates-io]
-confy = { git = 'https://github.com/rust-cli/confy' }
