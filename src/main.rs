@@ -2,18 +2,24 @@
 #![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
 
 use anyhow::Result;
+use axum::{
+    extract::{Extension, Path},
+    response::{Html, IntoResponse},
+    routing::get,
+    Json, Router,
+};
 use config::Config;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use slog::{info, o, Drain};
-use slog_json::Json;
-use std::{collections::HashMap, io, process, sync::Mutex};
-use warp::{http::Response, Filter};
-
-#[derive(Debug, Deserialize)]
-struct Cfg {
-    domain: String,
-    packages: HashMap<String, String>,
-}
+use slog_json::Json as JsonLogger;
+use std::{
+    collections::HashMap,
+    io,
+    net::SocketAddr,
+    process,
+    sync::{Arc, Mutex, RwLock},
+};
+use tower::ServiceBuilder;
 
 #[tokio::main]
 async fn main() {
@@ -28,7 +34,7 @@ async fn main() {
 
 async fn run() -> Result<()> {
     let log = slog::Logger::root(
-        Mutex::new(Json::default(io::stderr())).map(slog::Fuse),
+        Mutex::new(JsonLogger::default(io::stderr())).map(slog::Fuse),
         o!(),
     );
 
@@ -43,31 +49,46 @@ async fn run() -> Result<()> {
         |(k, v)| info!(log, "config"; "repository" => v, "package"=> format!("{}/{}", config.domain, k)),
     );
 
-    let live = warp::path::end()
-        .and(warp::get())
-        .map(|| r#"{"status":"OK"}"#);
+    let app = Router::new()
+        .route("/:package", get(vanity))
+        .route("/", get(health))
+        .layer(ServiceBuilder::new().layer(Extension(Arc::new(RwLock::new(config)))));
 
-    let vanity = warp::path::param::<String>()
-        .and(warp::get())
-        .and(warp::path::end())
-        .map(move |p| {
-            let package_name = format!("{}/{}", &config.domain, &p);
-            let repository_name = config.packages.get(&p);
-            match repository_name {
-                Some(repository_name) => Response::builder().body(format!(
-                    r#"<!DOCTYPE html><html><head><meta name="go-import" content="{} git {}"></head><body>Nothing to see here.</body></html>"#,
-                    package_name, repository_name
-                )),
-
-                None => Response::builder()
-                    .status(404)
-                    .body(format!("Package {} not found", package_name)),
-            }
-        });
-
-    let routes = warp::get().and(live.or(vanity));
-
-    warp::serve(routes).run(([0, 0, 0, 0], 3000)).await;
+    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+    info!(log, "listening"; "address" => addr);
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await?;
 
     Ok(())
+}
+
+async fn health() -> impl IntoResponse {
+    Json(Status { status: "Ok" })
+}
+
+type SharedState = Arc<RwLock<Cfg>>;
+
+async fn vanity(
+    Path(package): Path<String>,
+    Extension(state): Extension<SharedState>,
+) -> impl IntoResponse {
+    let s = &state.read().unwrap();
+    Html(format!(
+        r#"<!DOCTYPE html><html><head><meta name="go-import" content="{}/{} git {}"></head><body>Nothing to see here.</body></html>"#,
+        s.domain,
+        package,
+        s.packages.get(&package).unwrap(),
+    ))
+}
+
+#[derive(Debug, Deserialize, Clone)]
+struct Cfg {
+    domain: String,
+    packages: HashMap<String, String>,
+}
+
+#[derive(Serialize)]
+struct Status<'a> {
+    status: &'a str,
 }
