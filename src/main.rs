@@ -5,6 +5,7 @@
 use anyhow::Result;
 use axum::{
     extract::{Extension, Path},
+    http::StatusCode,
     response::{Html, IntoResponse, Response},
     routing::get,
     Json, Router,
@@ -107,6 +108,15 @@ pub enum VanityError {
 
 impl IntoResponse for VanityError {
     fn into_response(self) -> Response {
-        unimplemented!()
+        let (status, error_message) = match self {
+            VanityError::NotFound => (StatusCode::NOT_FOUND, "Package not found"),
+            VanityError::Poisoned => (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error"),
+        };
+
+        let body = Json(Status {
+            status: error_message,
+        });
+
+        (status, body).into_response()
     }
 }
