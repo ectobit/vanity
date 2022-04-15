@@ -10,6 +10,10 @@ Go vanity imports HTTP server
 
 `VANITY_CONFIG_PATH=$(pwd)/config.yaml cargo run`
 
+## Query
+
+`curl -v http://localhost:3000/go.ectobit.com/act?go-get=1`
+
 ## Related blog posts
 
 - [Vanity Go Import Paths](https://blog.bramp.net/post/2017/10/02/vanity-go-import-paths/)
