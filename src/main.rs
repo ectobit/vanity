@@ -4,7 +4,7 @@
 
 use anyhow::Result;
 use axum::{
-    extract::{Extension, Path},
+    extract::{Extension, Path, Query},
     http::StatusCode,
     response::{Html, IntoResponse, Response},
     routing::get,
@@ -73,8 +73,17 @@ type SharedState = Arc<RwLock<Cfg>>;
 
 async fn vanity(
     Path(package): Path<String>,
+    query: Option<Query<HashMap<String, String>>>,
     Extension(state): Extension<SharedState>,
 ) -> Result<Html<String>, VanityError> {
+    let Query(query) = query.unwrap_or_default();
+    if query.get("go-get").is_none() {
+        return Ok(Html(
+            "<!DOCTYPE html><html><body>Show some human readable stuff here.</body></html>"
+                .to_owned(),
+        )); // TODO: Show some human readable stuff here
+    }
+
     let s = &state.read().map_err(|err| {
         eprintln!("error: {}", err); // TODO: replace this with slog
         VanityError::Poisoned
