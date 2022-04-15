@@ -82,10 +82,10 @@ async fn vanity(
 
     match s.packages.get(&package) {
         Some(repository) => Ok(Html(format!(
-            r#"<!DOCTYPE html><html><head><meta name="go-import" content="{}/{} git {}"></head><body>Nothing to see here.</body></html>"#,
+            "<!DOCTYPE html><html><head><meta name=\"go-import\" content=\"{}/{} git {}\"></head><body>Nothing to see here.</body></html>",
             s.domain, package, repository,
         ))),
-        None => Err(VanityError::NotFound),
+        None => Err(VanityError::NotFound(package)),
     }
 }
 
@@ -95,7 +95,7 @@ struct Cfg {
     packages: HashMap<String, String>,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 struct Status<'a> {
     status: &'a str,
 }
@@ -103,19 +103,26 @@ struct Status<'a> {
 #[derive(Debug)]
 pub enum VanityError {
     Poisoned,
-    NotFound,
+    NotFound(String),
 }
 
 impl IntoResponse for VanityError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
-            VanityError::NotFound => (StatusCode::NOT_FOUND, "Package not found"),
-            VanityError::Poisoned => (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error"),
+            VanityError::NotFound(package) => (
+                StatusCode::NOT_FOUND,
+                format!("Package {} not found", package),
+            ),
+            VanityError::Poisoned => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Internal server error".to_owned(),
+            ),
         };
 
-        let body = Json(Status {
-            status: error_message,
-        });
+        let body = Html(format!(
+            "<!DOCTYPE html><html><body>{}.</body></html>",
+            error_message
+        ));
 
         (status, body).into_response()
     }
