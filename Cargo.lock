@@ -725,7 +725,6 @@ dependencies = [
  "slog",
  "slog-json",
  "tokio",
- "tower",
 ]
 
 [[package]]

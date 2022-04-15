@@ -12,7 +12,7 @@ use axum::{
 };
 use config::Config;
 use serde::{Deserialize, Serialize};
-use slog::{info, o, Drain};
+use slog::{info, o, warn, Drain, Logger};
 use slog_json::Json as JsonLogger;
 use std::{
     collections::HashMap,
@@ -21,7 +21,6 @@ use std::{
     process,
     sync::{Arc, Mutex, RwLock},
 };
-use tower::ServiceBuilder;
 
 #[tokio::main]
 async fn main() {
@@ -35,7 +34,7 @@ async fn main() {
 }
 
 async fn run() -> Result<()> {
-    let log = slog::Logger::root(
+    let log = Logger::root(
         Mutex::new(JsonLogger::default(io::stderr())).map(slog::Fuse),
         o!(),
     );
@@ -54,7 +53,8 @@ async fn run() -> Result<()> {
     let app = Router::new()
         .route("/:package", get(vanity))
         .route("/", get(health))
-        .layer(ServiceBuilder::new().layer(Extension(Arc::new(RwLock::new(config)))));
+        .layer(Extension(Arc::new(RwLock::new(config))))
+        .layer(Extension(log.clone()));
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     info!(log, "listening"; "address" => addr);
@@ -75,6 +75,7 @@ async fn vanity(
     Path(package): Path<String>,
     query: Option<Query<HashMap<String, String>>>,
     Extension(state): Extension<SharedState>,
+    Extension(log): Extension<Logger>,
 ) -> Result<Html<String>, VanityError> {
     let Query(query) = query.unwrap_or_default();
     if query.get("go-get").is_none() {
@@ -85,7 +86,7 @@ async fn vanity(
     }
 
     let s = &state.read().map_err(|err| {
-        eprintln!("error: {}", err); // TODO: replace this with slog
+        warn!(log, "error: {}", err);
         VanityError::Poisoned
     })?;
 
