@@ -8,7 +8,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.57"
-axum = "0.5.4"
+axum = "0.5.5"
 config = { version = "0.13.1", default-features = false, features = ["yaml"] }
 serde = { version = "1.0.137", features = ["derive"] }
 slog = { version = "2.7.0", features = ["max_level_trace", "release_max_level_info"] }
