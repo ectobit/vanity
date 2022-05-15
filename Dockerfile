@@ -9,7 +9,8 @@ RUN cargo install cargo-strip
 
 COPY . .
 
-RUN --mount=type=cache,target=/usr/local/cargo/registry,id=${TARGETPLATFORM} --mount=type=cache,target=/app/target,id=${TARGETPLATFORM} cargo build --release && \
+RUN --mount=type=cache,target=/usr/local/cargo/registry,id=${TARGETPLATFORM} --mount=type=cache,target=/app/target,id=${TARGETPLATFORM} \
+    cargo build --release && \
     cargo strip && \
     mv /app/target/release/vanity /app
 

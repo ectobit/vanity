@@ -1,14 +1,15 @@
 [package]
 name = "vanity"
-version = "0.3.11"
+version = "0.3.12"
 authors = ["Boban Acimovic <boban.acimovic@gmail.com>"]
+license = "BSD-2-Clause-Patent"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 anyhow = "1.0.57"
-axum = "0.5.5"
+axum = "0.5.6"
 config = { version = "0.13.1", default-features = false, features = ["yaml"] }
 serde = { version = "1.0.137", features = ["derive"] }
 slog = { version = "2.7.0", features = ["max_level_trace", "release_max_level_info"] }
