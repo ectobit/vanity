@@ -3,6 +3,8 @@ FROM rust:1.60.0 AS builder
 
 ARG TARGETPLATFORM
 
+WORKDIR /root
+
 RUN --mount=type=cache,target=/usr/local/cargo/registry,id=${TARGETPLATFORM} cargo install cargo-strip
 
 COPY . .
