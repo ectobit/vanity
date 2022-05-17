@@ -3,21 +3,19 @@ FROM rust:1.60.0 AS builder
 
 ARG TARGETPLATFORM
 
-WORKDIR /app
-
-RUN cargo install cargo-strip
+RUN --mount=type=cache,target=/usr/local/cargo/registry,id=${TARGETPLATFORM} cargo install cargo-strip
 
 COPY . .
 
-RUN --mount=type=cache,target=/usr/local/cargo/registry,id=${TARGETPLATFORM} --mount=type=cache,target=/app/target,id=${TARGETPLATFORM} \
+RUN --mount=type=cache,target=/usr/local/cargo/registry,id=${TARGETPLATFORM} --mount=type=cache,target=/root/target,id=${TARGETPLATFORM} \
     cargo build --release && \
     cargo strip && \
-    mv /app/target/release/vanity /app
+    mv /root/target/release/vanity /root
 
 FROM gcr.io/distroless/cc-debian11
 
-COPY --from=builder /app/vanity /
+COPY --from=builder /root/vanity /
 
-CMD ["./vanity"]
+ENTRYPOINT ["./vanity"]
 
 EXPOSE 3000
