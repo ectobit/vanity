@@ -90,7 +90,8 @@ async fn vanity(
         VanityError::Poisoned
     })?;
 
-    match s.packages.get(&package) {
+    let repository = s.packages.get(&package);
+    match repository {
         Some(repository) => Ok(Html(format!(
             "<!DOCTYPE html><html><head><meta name=\"go-import\" content=\"{}/{} git {}\"></head><body>Nothing to see here.</body></html>",
             s.domain, package, repository,
