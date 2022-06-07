@@ -59,19 +59,17 @@ async fn vanity(
     Extension(state): Extension<SharedState>,
 ) -> Result<Html<String>, VanityError> {
     let Query(query) = query.unwrap_or_default();
-    if query.get("go-get").is_none() {
-        return Ok(Html(
-            "<!DOCTYPE html><html><body>Show some human readable stuff here.</body></html>"
-                .to_owned(),
-        )); // TODO: Show some human readable stuff here
-    }
 
     let s = &state.lock().unwrap();
-
     let repository = s.packages.get(&package);
-    match repository {
-        Some(repository) => Ok(response(&s.domain, &package, repository)),
-        None => Err(VanityError::NotFound(package)),
+
+    if repository.is_none() {
+        return Err(VanityError::NotFound(format!("{}/{}", &s.domain, package)));
+    }
+
+    match query.get("go-get") {
+        Some(_) => Ok(response(&s.domain, &package, repository.unwrap())),
+        None => Ok(human_response(&s.domain, &package, repository.unwrap())),
     }
 }
 
@@ -122,10 +120,33 @@ fn error_response(message: &str) -> Html<String> {
         (DOCTYPE)
         html {
             head {
-                meta charset="utf-8";
+                title { "vanity 404" }
             }
             body {
                 (message)
+            }
+        }
+    };
+
+    Html(markup.into_string())
+}
+
+fn human_response(domain: &str, package: &str, repository: &str) -> Html<String> {
+    let markup = html! {
+        (DOCTYPE)
+        html {
+            head {
+                title { (domain) "/" (package) }
+            }
+            body {
+                h2 { (domain) "/" (package) }
+                code { "go get " (domain) "/" (package) }
+                br;
+                code { "import \"" (domain) "/" (package) "\"" }
+                br;
+                p { "Source: " a href={ (repository) } { (repository) } }
+                p { "Docs: " a href={ "https://pkg.go.dev/" (domain) "/" (package) } { "https://pkg.go.dev/" (domain) "/" (package) } }
+                p { "Report: " a href={ "https://goreportcard.com/report/" (domain) "/" (package) } { "https://pkg.go.dev/" (domain) "/" (package) } }
             }
         }
     };
