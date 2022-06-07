@@ -11,6 +11,7 @@ edition = "2021"
 anyhow = "1.0.57"
 axum = "0.5.6"
 config = { version = "0.13.1", default-features = false, features = ["yaml"] }
+maud = "0.23.0"
 serde = { version = "1.0.137", features = ["derive"] }
 slog = { version = "2.7.0", features = ["max_level_trace", "release_max_level_info"] }
 slog-json = "2.6.1"

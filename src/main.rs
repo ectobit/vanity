@@ -1,6 +1,5 @@
 //! Crate vanity implements Go vanity imports HTTP server.
-#![warn(missing_debug_implementations, rust_2018_idioms)]
-// #![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
+#![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
 
 use anyhow::{Context, Result};
 use axum::{
@@ -11,6 +10,7 @@ use axum::{
     Json, Router,
 };
 use config::Config;
+use maud::{html, DOCTYPE};
 use serde::{Deserialize, Serialize};
 use slog::{info, o, warn, Drain, Logger};
 use slog_json::Json as JsonLogger;
@@ -96,10 +96,7 @@ async fn vanity(
 
     let repository = s.packages.get(&package);
     match repository {
-        Some(repository) => Ok(Html(format!(
-            "<!DOCTYPE html><html><head><meta name=\"go-import\" content=\"{}/{} git {}\"></head><body>Nothing to see here.</body></html>",
-            s.domain, package, repository,
-        ))),
+        Some(repository) => Ok(html(&s.domain, &package, repository)),
         None => Err(VanityError::NotFound(package)),
     }
 }
@@ -115,9 +112,13 @@ struct Status<'a> {
     status: &'a str,
 }
 
+/// Custom error
+#[non_exhaustive]
 #[derive(Debug)]
 pub enum VanityError {
+    /// Mutex poisoned
     Poisoned,
+    /// Document not found
     NotFound(String),
 }
 
@@ -141,4 +142,20 @@ impl IntoResponse for VanityError {
 
         (status, body).into_response()
     }
+}
+
+fn html(domain: &str, package: &str, repository: &str) -> Html<String> {
+    let markup = html! {
+        (DOCTYPE)
+        html {
+            head {
+                meta name="go-import" content={ (domain) "/" (package) " git " (repository) };
+            }
+            body {
+                "Nothing to see here."
+            }
+        }
+    };
+
+    Html(markup.into_string())
 }
