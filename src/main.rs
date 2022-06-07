@@ -2,7 +2,7 @@
 #![warn(missing_debug_implementations, rust_2018_idioms)]
 // #![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use axum::{
     extract::{Extension, Path, Query},
     http::StatusCode,
@@ -39,12 +39,15 @@ async fn run() -> Result<()> {
         o!(),
     );
 
-    let config_path = std::env::var("VANITY_CONFIG_PATH")?;
+    let config_path =
+        std::env::var("VANITY_CONFIG_PATH").context("env var VANITY_CONFIG_PATH not set")?;
     info!(log, "config path: {}", config_path);
     let config = Config::builder()
         .add_source(config::File::with_name(&config_path))
-        .build()?
-        .try_deserialize::<Cfg>()?;
+        .build()
+        .context("failed building config")?
+        .try_deserialize::<Cfg>()
+        .context("failed deserializing config")?;
 
     config.packages.iter().for_each(
         |(k, v)| info!(log, "config"; "repository" => v, "package"=> format!("{}/{}", config.domain, k)),
@@ -60,7 +63,8 @@ async fn run() -> Result<()> {
     info!(log, "listening"; "address" => addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
-        .await?;
+        .await
+        .context("failed running server")?;
 
     Ok(())
 }
