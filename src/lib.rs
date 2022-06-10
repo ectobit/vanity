@@ -9,11 +9,7 @@ use maud::{html, DOCTYPE};
 use serde::Deserialize;
 use serde_json::{json, Value};
 use slog::{info, Logger};
-use std::{
-    collections::HashMap,
-    net::SocketAddr,
-    sync::{Arc, Mutex},
-};
+use std::{collections::HashMap, net::SocketAddr, sync::Arc};
 use thiserror::Error;
 
 pub struct Server {
@@ -26,7 +22,7 @@ impl Server {
     pub fn new(port: u16, config: Config, log: Logger) -> Self {
         Self {
             port,
-            config: Arc::new(Mutex::new(config)),
+            config: Arc::new(config),
             log,
         }
     }
@@ -51,27 +47,23 @@ async fn health() -> Json<Value> {
     Json(json!({ "status": "ok" }))
 }
 
-type SharedConfig = Arc<Mutex<Config>>;
+type SharedConfig = Arc<Config>;
 
 async fn vanity(
     Path(package): Path<String>,
     query: Option<Query<GoGetQuery>>,
     Extension(config): Extension<SharedConfig>,
 ) -> Result<Html<String>, VanityError> {
-    let (domain, repository) = {
-        let c = config.lock().unwrap();
-        let d = c.domain.clone();
-        let r = c
-            .packages
-            .get(&package)
-            .ok_or_else(|| VanityError::NotFound(format!("{}/{}", d, package)))?
-            .clone();
-        (d, r)
-    };
+    let config = Arc::clone(&config);
+    let domain = &config.domain;
+    let repository = config
+        .packages
+        .get(&package)
+        .ok_or_else(|| VanityError::NotFound(format!("{}/{}", domain, package)))?;
 
     match query.is_some() && query.unwrap().go_get.is_some() {
-        true => Ok(response(&domain, &package, &repository)),
-        false => Ok(human_response(&domain, &package, &repository)),
+        true => Ok(response(domain, &package, repository)),
+        false => Ok(human_response(domain, &package, repository)),
     }
 }
 
