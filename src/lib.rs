@@ -18,7 +18,7 @@ use thiserror::Error;
 
 pub struct Server {
     port: u16,
-    config: SharedState,
+    config: SharedConfig,
     log: Logger,
 }
 
@@ -51,25 +51,29 @@ async fn health() -> Json<Value> {
     Json(json!({ "status": "ok" }))
 }
 
-type SharedState = Arc<Mutex<Config>>;
+type SharedConfig = Arc<Mutex<Config>>;
 
 async fn vanity(
     Path(package): Path<String>,
     query: Option<Query<HashMap<String, String>>>,
-    Extension(state): Extension<SharedState>,
+    Extension(config): Extension<SharedConfig>,
 ) -> Result<Html<String>, VanityError> {
     let Query(query) = query.unwrap_or_default();
 
-    let s = &state.lock().unwrap();
-    let repository = s.packages.get(&package);
-
-    if repository.is_none() {
-        return Err(VanityError::NotFound(format!("{}/{}", &s.domain, package)));
-    }
+    let (domain, repository) = {
+        let c = config.lock().unwrap();
+        let d = c.domain.clone();
+        let r = c
+            .packages
+            .get(&package)
+            .ok_or_else(|| VanityError::NotFound(format!("{}/{}", d, package)))?
+            .clone();
+        (d, r)
+    };
 
     match query.get("go-get") {
-        Some(_) => Ok(response(&s.domain, &package, repository.unwrap())),
-        None => Ok(human_response(&s.domain, &package, repository.unwrap())),
+        Some(_) => Ok(response(&domain, &package, &repository)),
+        None => Ok(human_response(&domain, &package, &repository)),
     }
 }
 
