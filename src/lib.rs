@@ -55,11 +55,9 @@ type SharedConfig = Arc<Mutex<Config>>;
 
 async fn vanity(
     Path(package): Path<String>,
-    query: Option<Query<HashMap<String, String>>>,
+    query: Option<Query<GoGetQuery>>,
     Extension(config): Extension<SharedConfig>,
 ) -> Result<Html<String>, VanityError> {
-    let Query(query) = query.unwrap_or_default();
-
     let (domain, repository) = {
         let c = config.lock().unwrap();
         let d = c.domain.clone();
@@ -71,9 +69,9 @@ async fn vanity(
         (d, r)
     };
 
-    match query.get("go-get") {
-        Some(_) => Ok(response(&domain, &package, &repository)),
-        None => Ok(human_response(&domain, &package, &repository)),
+    match query.is_some() && query.unwrap().go_get.is_some() {
+        true => Ok(response(&domain, &package, &repository)),
+        false => Ok(human_response(&domain, &package, &repository)),
     }
 }
 
@@ -162,4 +160,10 @@ fn human_response(domain: &str, package: &str, repository: &str) -> Html<String>
 pub struct Config {
     pub domain: String,
     pub packages: HashMap<String, String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GoGetQuery {
+    #[serde(rename = "go-get")]
+    go_get: Option<u8>,
 }
