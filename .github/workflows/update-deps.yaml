@@ -8,3 +8,5 @@ on:
 jobs:
   update-deps:
     uses: ectobit/reusable-workflows/.github/workflows/rust-update-deps.yaml@main
+    secrets:
+      token: ${{ secrets.PAT }}
