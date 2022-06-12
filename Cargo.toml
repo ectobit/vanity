@@ -1,6 +1,6 @@
 [package]
 name = "vanity"
-version = "0.5.1"
+version = "0.5.2"
 authors = ["Boban Acimovic <boban.acimovic@gmail.com>"]
 license = "BSD-2-Clause-Patent"
 edition = "2021"

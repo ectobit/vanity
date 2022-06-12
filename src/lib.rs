@@ -138,9 +138,9 @@ fn human_response(domain: &str, package: &str, repository: &str) -> Html<String>
                 br;
                 code { "import \"" (domain) "/" (package) "\"" }
                 br;
-                p { "Source: " a href={ (repository) } { (repository) } }
-                p { "Docs: " a href={ "https://pkg.go.dev/" (domain) "/" (package) } { "https://pkg.go.dev/" (domain) "/" (package) } }
-                p { "Report: " a href={ "https://goreportcard.com/report/" (domain) "/" (package) } { "https://pkg.go.dev/" (domain) "/" (package) } }
+                a href={ (repository) } { "Source" }
+                a href={ "https://pkg.go.dev/" (domain) "/" (package) } { "Docs" }
+                a href={ "https://goreportcard.com/report/" (domain) "/" (package) } { "Go Report Card" }
             }
         }
     };
