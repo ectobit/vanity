@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.3
-FROM rust:1.62.1 AS builder
+FROM rust:1.63.0 AS builder
 
 ARG TARGETPLATFORM
 
