@@ -12,7 +12,7 @@ async fn main() {
     process::exit(match run().await {
         Ok(_) => 0,
         Err(err) => {
-            eprintln!("error: {:?}", err);
+            eprintln!("error: {err:?}");
             1
         }
     });
@@ -35,7 +35,7 @@ async fn run() -> Result<()> {
         .context("failed deserializing config")?;
 
     config.packages.iter().for_each(
-        |(k, v)| info!(log, "config"; "repository" => v, "package"=> format!("{}/{}", config.domain, k)),
+        |(k, v)| info!(log, "config"; "repository" => v, "package"=> format!("{}/{k}", config.domain)),
     );
 
     let server = Server::new(3000, config, log);

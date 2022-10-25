@@ -59,7 +59,7 @@ async fn vanity(
     let repository = config
         .packages
         .get(&package)
-        .ok_or_else(|| VanityError::NotFound(format!("{}/{}", domain, package)))?;
+        .ok_or_else(|| VanityError::NotFound(format!("{domain}/{package}")))?;
 
     match query.is_some() && query.unwrap().go_get.is_some() {
         true => Ok(response(domain, &package, repository)),
@@ -81,7 +81,7 @@ impl IntoResponse for VanityError {
         let (status, error_message) = match self {
             VanityError::NotFound(package) => (
                 StatusCode::NOT_FOUND,
-                format!("Package {} not found", package),
+                format!("Package {package} not found"),
             ),
             VanityError::Hyper(_) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
